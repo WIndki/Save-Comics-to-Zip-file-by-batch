@@ -1,0 +1,15 @@
+/__pycache__
+/bika
+/build
+/cache
+/dist
+/Include
+/Lib
+/Scripts
+/download
+/commies
+main.exe
+main.spec
+manga_list.json
+pyvenv.cfg
+settings.json
