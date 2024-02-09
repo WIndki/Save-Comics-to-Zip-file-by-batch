@@ -32,6 +32,7 @@ def main():
         return
     else:
         print(f"[yellow]发现{new_total-total}个新的下载[/]")
+        input("按回车键开始压缩...")
     for manga in (manga_list[total:]) :
         if manga["isZiped"] == "false":
             zipfun(manga["name"],DOWNLOAD_DIR,SAVE_DIR,manga["isWaifu2x"])
@@ -40,6 +41,8 @@ def main():
         json.dump(manga_list, f, ensure_ascii=False, indent=4)
     for manga in (manga_list) :
         remove_download_cache(manga["name"])
+    print(f"[green]压缩完成[/]")
 
 if __name__ == "__main__":
     main()
+    input("按回车键退出...")

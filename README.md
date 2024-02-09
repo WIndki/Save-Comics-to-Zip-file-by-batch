@@ -2,7 +2,7 @@
 
 ### 本脚本主要用于结构：
 
-**`download\manga_name\chapter_name\xxx.jpg`**
+**`download\manga_name\chapter_name\original\xxx.jpg`**
 漫画图片将以原始目录结构压缩为zip文件
 
 ---
