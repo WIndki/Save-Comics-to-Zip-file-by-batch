@@ -1,10 +1,7 @@
 import os
-import shutil
 import json
-import time
 from rich import print as print
 from rich.console import Console
-from rich.prompt import Prompt, Confirm, IntPrompt
 from setting import setting
 from zip import zipfun
 from list import get_manga_list, create_manga_list_json
