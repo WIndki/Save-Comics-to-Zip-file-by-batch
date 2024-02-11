@@ -1,5 +1,7 @@
 import os
 import json
+import threading
+import queue
 from rich import print as print
 from rich.console import Console
 from setting import setting
@@ -9,6 +11,24 @@ from remove_cache import remove_download_cache
 RUNNING_DIR, SAVE_DIR, DOWNLOAD_DIR = setting()
 
 console = Console(color_system='256', style=None)
+
+# 添加一个多线程压缩函数
+def multiThreadZip(manga_list):
+    q = queue.Queue()#创建线程队列
+    for manga in manga_list:
+        if manga["isZiped"] == "false" and manga["name"] != "":
+            q.put(manga)
+    def worker():
+        while not q.empty():
+            manga = q.get()
+            zipfun(manga["name"],DOWNLOAD_DIR,SAVE_DIR,manga["isWaifu2x"])
+            manga["isZiped"] = "true"
+            q.task_done()
+    for i in range(8):#线程数
+        t = threading.Thread(target=worker)
+        t.start()
+    q.join()
+
 
 
 def main():
@@ -30,10 +50,11 @@ def main():
     else:
         print(f"[yellow]发现{new_total-total}个新的下载[/]")
         input("按回车键开始压缩...")
-    for manga in (manga_list[total:]) :
-        if manga["isZiped"] == "false":
-            zipfun(manga["name"],DOWNLOAD_DIR,SAVE_DIR,manga["isWaifu2x"])
-            manga["isZiped"] = "true"
+    # for manga in (manga_list[total:]) :
+    #     if manga["isZiped"] == "false":
+    #         zipfun(manga["name"],DOWNLOAD_DIR,SAVE_DIR,manga["isWaifu2x"])
+    #         manga["isZiped"] = "true"
+    multiThreadZip(manga_list)
     with open(f"{RUNNING_DIR}/manga_list.json", 'w', encoding='utf-8') as f:
         json.dump(manga_list, f, ensure_ascii=False, indent=4)
     for manga in (manga_list) :
