@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from rich import print as print
 from setting import setting
 RUNNING_DIR, SAVE_DIR, DOWNLOAD_DIR = setting()
 #获取文件夹下漫画列表
