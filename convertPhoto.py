@@ -4,6 +4,7 @@ from PIL import Image
 import pillow_avif
 import shutil
 import threading
+import json
 from alive_progress import alive_bar
 from rich import print as print
 from rich.console import Console
@@ -17,7 +18,7 @@ def unzip(filePath):
             z.extractall(save_path)
             rename_file(save_path)
             z.close()
-    print("\n" + f"[bold green][:white_check_mark:]已解压[{filePath}]的ZIP存档[/]")
+    print(f"[bold green][:white_check_mark:]已解压[{filePath}]的ZIP存档[/]")
 
 def rename_file(file_path):
     os.chdir(file_path)
@@ -76,15 +77,35 @@ def convert_by_sorting(dir_path):
                         threads = []
                     #convert_to_avif(os.path.join(root, file))
                     #remove_file(os.path.join(root, file))
-    print("\n" + f"[bold green][:white_check_mark:]已转换[{dir_path}]的图片格式[/]")
+    print(f"[bold green][:white_check_mark:]已转换[{dir_path}]的图片格式[/]")
 
 def remove_dir(dir_path):
     shutil.rmtree(dir_path)
-    
+
+def first_run():
+    default=os.getcwd()
+    manga_path = Prompt.ask("请输入你的漫画存档路径", default=default)
+    output_path = Prompt.ask("请输入你的输出路径", default=default)
+    config = {
+        "manga_path": manga_path,
+        "output_path": output_path
+    }
+    with open(os.path.join(default,'config.json'), 'w', encoding='utf-8') as f:
+        json.dump(config, f, ensure_ascii=False, indent=4)
+
+def import_config():
+    config_path = os.path.join(os.getcwd(), 'config.json')
+    if not os.path.exists(config_path):
+        first_run()
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    return config
+
 def main():
-    files = os.listdir("D:\manga\download")
+    config = import_config()
+    files = os.listdir(config['manga_path'])
     for file in files:
-        file_path = os.path.join("D:\manga\download", file)
+        file_path = os.path.join(config['manga_path'], file)
         if file_path.endswith('.zip'):
             unzip(file_path)
             remove_file(file_path)
